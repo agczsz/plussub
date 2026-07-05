@@ -24,6 +24,18 @@
   "host_permissions": [
     "https://*/"
   ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "libass-wasm/*",
+        "fonts/*"
+      ],
+      "matches": [
+        "https://*/*",
+        "http://*/*"
+      ]
+    }
+  ],
   "permissions": [
     "webNavigation",
     "scripting",

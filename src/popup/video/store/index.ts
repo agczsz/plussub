@@ -1,5 +1,5 @@
 import { computed, ref } from 'vue';
-import { SubtitleEntry } from '@/subtitle/store';
+import { SubtitleEntry, SubtitleFormat } from '@/subtitle/store';
 import { mergeMap, takeUntil, tap } from 'rxjs/operators';
 import { merge, Subject, interval } from 'rxjs';
 import { useStore as useContentScriptStore } from '@/contentScript/store';
@@ -44,7 +44,6 @@ export const useStore = defineStore('video', () => {
 
   const highlight = ({ video }: { video: Pick<Video, 'id'> | null }) => {
     if (!video) {
-      console.warn('highlight: video not found');
       return;
     }
     useContentScriptStore().sendCommand({
@@ -73,11 +72,14 @@ export const useStore = defineStore('video', () => {
       useContentScriptStore().sendCommand({ contentScriptInput: 'DESELECT_VIDEO' });
       return tick();
     },
-    async addVtt({
+    async addSubtitle({
                    subtitles,
                    subtitleId,
-                   language
-                 }: { subtitles: SubtitleEntry[]; subtitleId: string; language: string }) {
+                   language,
+                   format,
+                   raw,
+                   offsetMs
+                 }: { subtitles: SubtitleEntry[]; subtitleId: string; language: string; format: SubtitleFormat | null; raw: string | null; offsetMs: number }) {
       const video = Object.values<Video>(videos.value).find((v) => v.status === 'selected' || v.status === 'injected');
       if (!video) {
         return tick();
@@ -93,7 +95,10 @@ export const useStore = defineStore('video', () => {
         subtitle: {
           id: subtitleId,
           entries: JSON.parse(JSON.stringify(subtitles)),
-          language
+          language,
+          format,
+          raw,
+          offsetMs
         }
       });
       return tick();

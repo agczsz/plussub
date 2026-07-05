@@ -2,7 +2,7 @@
   <div style="grid-template-columns: auto auto 1fr; grid-column-gap: 24px; grid-row-gap: 24px" class="grid w-full leading-relaxed">
     <ToggleButton v-model='enableColor'/>
     <div class="self-center font-medium text-sm" >Text color</div>
-    <input v-model="color" type="color" class="self-center justify-self-center w-full"/>
+    <input id="plussub-subtitle-color" v-model="color" type="color" aria-label="Subtitle color" class="self-center justify-self-center w-full"/>
 
 
     <Divider class='bottom-0 border-surface-200' style='grid-column: 1/-1'></Divider>
@@ -10,7 +10,7 @@
     <ToggleButton v-model='enableBackgroundColor' style='grid-column-start: 1'/>
 
     <div class="self-center font-medium text-sm" style='grid-column-start: 2'>Background color</div>
-    <input v-model="backgroundColor" type="color" class="self-end justify-self-center w-full" style='grid-column-start: 3'/>
+    <input id="plussub-subtitle-background-color" v-model="backgroundColor" type="color" aria-label="Subtitle background color" class="self-end justify-self-center w-full" style='grid-column-start: 3'/>
 
 
     <div style='grid-column: 2/-1'>

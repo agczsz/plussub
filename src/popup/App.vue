@@ -81,7 +81,14 @@ export default defineComponent({
           return;
         }
         appearanceStore.applyStyle();
-        videoStore.addVtt({ subtitles, subtitleId, language: subtitleStore.language ?? 'en' });
+        videoStore.addSubtitle({
+          subtitles,
+          subtitleId,
+          language: subtitleStore.language ?? 'en',
+          format: subtitleStore.format,
+          raw: subtitleStore.raw,
+          offsetMs: subtitleStore.offsetTime
+        });
       }
     );
 

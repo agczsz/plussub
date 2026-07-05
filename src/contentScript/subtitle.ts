@@ -1,5 +1,6 @@
 import { filter, map, tap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { merge, Observable } from 'rxjs';
+import { mountAssSubtitle, unmountAssSubtitle } from './assRenderer';
 import {
   ContentScriptInputMessageEvent,
   EXTENSION_LABEL,
@@ -26,17 +27,34 @@ type AddSubtitleMessageEvent = ContentScriptInputMessageEvent<'ADD_SUBTITLE', {
     id;
     entries: { from: number; to: number; text: string }[];
     language: string;
+    format?: '.srt' | '.vtt' | '.ass' | '.ssa';
+    raw?: string;
+    offsetMs?: number;
   };
 }>;
 
 export const init = ({ inputObservable, getVideoElementFrom }: Payload): Observable<unknown> => {
-  return inputObservable.pipe(
+  const addSubtitleObservable = inputObservable.pipe(
     filter((e): e is AddSubtitleMessageEvent => e.data.contentScriptInput === 'ADD_SUBTITLE'),
     map<AddSubtitleMessageEvent, { el: HTMLVideoElement | null; messageEvent: AddSubtitleMessageEvent }>((messageEvent) => ({
       el: getVideoElementFrom(messageEvent.data.video.id),
       messageEvent
     })),
     filter((value): value is { el: HTMLVideoElement; messageEvent: AddSubtitleMessageEvent } => value.el !== null),
+    tap(({ el, messageEvent }) => {
+      const { format, raw, offsetMs } = messageEvent.data.subtitle;
+      if ((format === '.ass' || format === '.ssa') && raw) {
+        [...el.textTracks]
+          .filter((track) => track.label === EXTENSION_LABEL && track.mode !== 'disabled')
+          .forEach((track) => (track.mode = 'disabled'));
+        mountAssSubtitle({ video: el, assText: raw, offsetMs: offsetMs ?? 0 }).catch((error) => {
+          console.error('[plussub][ass]', error);
+        });
+      } else {
+        unmountAssSubtitle();
+      }
+    }),
+    filter(({ messageEvent }) => messageEvent.data.subtitle.format !== '.ass' && messageEvent.data.subtitle.format !== '.ssa'),
     map<{ el: HTMLVideoElement; messageEvent: AddSubtitleMessageEvent }, { track: TextTrack; entries: VTTCue[] }>(({ el, messageEvent }) => {
       el.dataset[`${EXTENSION_ORIGIN}Status`] = 'injected';
 
@@ -64,4 +82,11 @@ export const init = ({ inputObservable, getVideoElementFrom }: Payload): Observa
       track.mode = 'showing';
     })
   );
+
+  const removeSubtitleObservable = inputObservable.pipe(
+    filter((e) => e.data.contentScriptInput === 'DESELECT_VIDEO'),
+    tap(() => unmountAssSubtitle())
+  );
+
+  return merge(addSubtitleObservable, removeSubtitleObservable);
 };

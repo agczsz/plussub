@@ -1,5 +1,5 @@
 <template>
-  <input :value="modelValue" type="range" v-bind="$attrs" @input="setValue" />
+  <input :id="inputId" :value="modelValue" type="range" v-bind="$attrs" @input="setValue" />
 </template>
 
 <script lang="ts">
@@ -7,6 +7,7 @@ import { defineComponent } from 'vue';
 import { asyncScheduler, Subject } from 'rxjs';
 import { takeUntil, tap, throttleTime } from 'rxjs/operators';
 import { useUnmountObservable } from '../composables';
+import { nanoid } from 'nanoid';
 
 export default defineComponent({
   props: {
@@ -27,6 +28,7 @@ export default defineComponent({
         )
         .subscribe();
     return {
+      inputId: `plussub-range-${nanoid(8)}`,
       setValue: (event) => subject.next(event.target.value)
     };
   }

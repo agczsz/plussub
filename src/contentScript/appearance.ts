@@ -6,6 +6,7 @@ import {
   GenericContentScriptInputMessageEvent
 } from './types';
 import { filter, map, mergeMap, tap } from 'rxjs/operators';
+import { findVideoElementsDeep } from './video/findVideoElements';
 
 declare global {
   interface Window {
@@ -48,7 +49,7 @@ export const init = ({ inputObservable }: Payload): Observable<unknown> => {
         window.cue[property] = value;
       }
 
-      const video = document.querySelector<HTMLVideoElement>(`video[data-${EXTENSION_ORIGIN}-status="injected"]`);
+      const video = findVideoElementsDeep().find((video) => video.dataset[`${EXTENSION_ORIGIN}Status`] === 'injected');
       if(video) {
         [...video.textTracks]
           .filter((track) => track.label === EXTENSION_LABEL)

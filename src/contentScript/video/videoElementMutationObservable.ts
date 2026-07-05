@@ -1,12 +1,8 @@
 import {Observable} from "rxjs";
-import {isHTMLElement, isHTMLVideoElement} from "@/types";
+import { findVideoElementsInNodesDeep } from './findVideoElements';
 
 const findVideoElement = (nodes: Node[]):HTMLVideoElement[] => {
-  const directMatch = nodes.find((node): node is HTMLVideoElement => isHTMLVideoElement(node));
-  if (directMatch) {
-    return [directMatch];
-  }
-  return nodes.reduce<HTMLVideoElement[]>((acc, parent) => (isHTMLElement(parent) ? [...acc, ...Array.from<HTMLVideoElement>(parent.querySelectorAll('video'))] : acc), []);
+  return findVideoElementsInNodesDeep(nodes);
 };
 
 const addedVideoElements = (mutationsList: MutationRecord[]): HTMLVideoElement[] => {

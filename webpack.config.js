@@ -131,7 +131,13 @@ export default (env) => {
               return toPrettyJson(mayWithExtensionId);
             }
           },
-          { from: 'res', to: 'res' },
+          { from: 'res', to: 'res', globOptions: { ignore: ['**/fonts/**'] } },
+          { from: '../node_modules/libass-wasm/dist/js/subtitles-octopus-worker.js', to: 'libass-wasm/subtitles-octopus-worker.js' },
+          { from: '../node_modules/libass-wasm/dist/js/subtitles-octopus-worker-legacy.js', to: 'libass-wasm/subtitles-octopus-worker-legacy.js' },
+          { from: '../node_modules/libass-wasm/dist/js/subtitles-octopus-worker.wasm', to: 'libass-wasm/subtitles-octopus-worker.wasm' },
+          { from: '../node_modules/typeface-roboto/files/roboto-latin-400.woff2', to: 'fonts/roboto-latin-400.woff2' },
+          { from: 'res/fonts/msyh.ttc', to: 'fonts/msyh.ttc' },
+          { from: 'res/fonts/msyhbd.ttc', to: 'fonts/msyhbd.ttc' },
           { from: 'popup/font.css', to: 'font.css' },
           { from: 'contentScript/contentScript.css', to: 'contentScript.css' },
           { from: 'cssContentScript/index.js', to: 'cssContentScript.js' }

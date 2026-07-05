@@ -7,6 +7,7 @@ import { init as initHighlight } from './highlight';
 import { init as initSubtitle } from './subtitle';
 import { init as initTime } from './time';
 import { init as initAppearance } from './appearance';
+import { findVideoElementByExtensionId } from './video/findVideoElements';
 import {
   GenericContentScriptInputMessageEvent,
   isGenericContentScriptInputMessageEvent,
@@ -37,7 +38,7 @@ declare global {
     filter<MessageEvent, GenericContentScriptInputMessageEvent>(isGenericContentScriptInputMessageEvent),
     share()
   );
-  const getVideoElementFrom = (id: string) => document.querySelector<HTMLVideoElement>(`video[data-${EXTENSION_ORIGIN}-id="${id}"]`);
+  const getVideoElementFrom = (id: string) => findVideoElementByExtensionId(id, EXTENSION_ORIGIN);
 
   merge(
     initPing({ inputObservable }),

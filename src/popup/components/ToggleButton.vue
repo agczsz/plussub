@@ -4,7 +4,7 @@
       <!-- toggle -->
       <div class="relative">
         <!-- input $emit('update:modelValue', $event.target.value)-->
-        <input ref="checkbox" class="sr-only" :checked="modelValue" type="checkbox" @input="input" />
+        <input ref="checkbox" :id="inputId" class="sr-only" :checked="modelValue" type="checkbox" @input="input" />
         <!-- line -->
         <div class="w-10 h-4 bg-surface-300 rounded-full shadow-inner"></div>
         <!-- dot -->
@@ -19,6 +19,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue';
+import { nanoid } from 'nanoid';
 
 export default defineComponent({
   props: {
@@ -32,6 +33,7 @@ export default defineComponent({
     const checkbox = ref<HTMLInputElement|null>(null)
     return {
       checkbox,
+      inputId: `plussub-toggle-${nanoid(8)}`,
       input: () => emit('update:modelValue', checkbox.value?.checked ?? false)
     }
   }

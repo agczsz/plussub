@@ -2,6 +2,7 @@
   <div class="grid focus-within:text-primary-700" style="display: grid; grid-template-areas: 'bar'; grid-template-columns: 1fr auto; grid-template-rows: 30px">
     <input
         ref="input"
+        :id="inputId"
         :value="modelValue"
         class="w-full rounded focus:border-primary-500 focus:ring focus:ring-primary-700 focus:ring-opacity-50"
         autofocus
@@ -22,6 +23,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
+import { nanoid } from 'nanoid';
 import FontAwesomeIcon from './FontAwesomeIcon/FontAwesomeIcon.vue';
 
 export default defineComponent({
@@ -48,6 +50,7 @@ export default defineComponent({
 
     return {
       input,
+      inputId: `plussub-input-${nanoid(8)}`,
       clear: () => {
         emit('update:modelValue', "");
         input.value?.focus();

@@ -1,5 +1,5 @@
 <template>
-  <input :value="modelValue" type="color" v-bind="$attrs" @input="setValue" />
+  <input :id="inputId" :value="modelValue" type="color" v-bind="$attrs" @input="setValue" />
 </template>
 
 <script lang="ts">
@@ -7,6 +7,7 @@ import { defineComponent, PropType } from 'vue';
 import { asyncScheduler, Subject } from 'rxjs';
 import { takeUntil, tap, throttleTime } from 'rxjs/operators';
 import { useUnmountObservable } from '@/composables';
+import { nanoid } from 'nanoid';
 
 export default defineComponent({
   props: {
@@ -28,6 +29,7 @@ export default defineComponent({
       .subscribe();
 
     return {
+      inputId: `plussub-color-${nanoid(8)}`,
       setValue: (event) => subject.next(event.target.value)
     };
   }
